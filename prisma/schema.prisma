@@ -6,3 +6,83 @@ datasource db {
   provider = "mysql"
   url      = "mysql://root:123456@127.0.0.1:3306/nestjs_quick_start"
 }
+
+model Department {
+  id            String   @id
+  name          String
+  description   String?
+  sort          Int      @default(0)
+  parentId      String   @default("-1") @map("parent_id")
+  fullPath      String   @map("full_path")
+  enabledStatus Boolean  @default(true) @map("enabled_status")
+  createTime    DateTime @default(now()) @map("create_time")
+  updateTime    DateTime @default(now()) @updatedAt @map("update_time")
+  users         User[]
+
+  @@map("department")
+}
+
+model Role {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique
+  code          String   @unique
+  description   String?
+  sort          Int      @default(0)
+  enabledStatus Boolean  @default(true) @map("enabled_status")
+  createTime    DateTime @default(now()) @map("create_time")
+  updateTime    DateTime @default(now()) @updatedAt @map("update_time")
+  menus         Menu[]
+  users         User[]
+
+  @@map("role")
+}
+
+model Menu {
+  id            Int      @id @default(autoincrement())
+  name          String
+  code          String?  @unique
+  sort          Int      @default(0)
+  parentId      Int      @default(-1) @map("parent_id")
+  type          MenuType @default(CATALOG)
+  icon          String?
+  url           String?
+  componentUrl  String?  @map("component_url")
+  redirectUrl   String?  @map("redirect_url")
+  enabledStatus Boolean  @default(true) @map("enabled_status")
+  createTime    DateTime @default(now()) @map("create_time")
+  updateTime    DateTime @default(now()) @updatedAt @map("update_time")
+  roles         Role[]
+  users         User[]
+
+  @@map("menu")
+}
+
+model User {
+  id            Int         @id @default(autoincrement())
+  nickname      String
+  password      String
+  phone         String      @unique
+  email         String      @unique
+  sex           SexType     @default(UNKNOWN)
+  departmentId  String?     @map("department_id")
+  enabledStatus Boolean     @default(true) @map("enabled_status")
+  createTime    DateTime    @default(now()) @map("create_time")
+  updateTime    DateTime    @default(now()) @updatedAt @map("update_time")
+  department    Department? @relation(fields: [departmentId], references: [id])
+  roles         Role[]
+  menus         Menu[]
+
+  @@map("user")
+}
+
+enum MenuType {
+  CATALOG
+  MENU
+  BUTTON
+}
+
+enum SexType {
+  MALE
+  FEMALE
+  UNKNOWN
+}
