@@ -29,8 +29,8 @@ export class DepartmentService extends PrismaClient {
     })
   }
 
-  async findAll(keyword: string): Promise<Department[]> {
-    const departments = await this.department.findMany({ where: { name: { contains: keyword } } })
+  async findAll(keywords: string): Promise<Department[]> {
+    const departments = await this.department.findMany({ where: { name: { contains: keywords } } })
 
     return listToTree(departments)
   }

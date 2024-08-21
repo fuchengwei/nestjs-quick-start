@@ -13,8 +13,8 @@ export class DepartmentController {
   }
 
   @Get()
-  findAll(@Query('keyword') keyword: string) {
-    return this.departmentService.findAll(keyword)
+  findAll(@Query('keywords') keywords: string) {
+    return this.departmentService.findAll(keywords)
   }
 
   @Get(':id')
